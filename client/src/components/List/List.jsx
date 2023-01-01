@@ -1,41 +1,19 @@
-import React from 'react'
-import "./List.scss"
-import { Card } from '../Card/Card'
-export const List = () => {
-    const data=[
-        {
-            id:1,
-            img:"https://images-do.nyc3.cdn.digitaloceanspaces.com/lAVtCJXFVr/product_images/1638351540.AP0015.jpeg",
-            title:"Shirt",
-            price:150,
-            Discount:10
-        },
-        {
-            id:2,
-            img:"https://images-do.nyc3.cdn.digitaloceanspaces.com/lAVtCJXFVr/product_images/1638351540.AP0015.jpeg",
-            title:"Shirt",
-            price:150,
-            Discount:10
-        },
-        {
-            id:3,
-            img:"https://images-do.nyc3.cdn.digitaloceanspaces.com/lAVtCJXFVr/product_images/1638351540.AP0015.jpeg",
-            title:"Shirt",
-            price:150,
-            Discount:10
-        },
-        {
-            id:4,
-            img:"https://images-do.nyc3.cdn.digitaloceanspaces.com/lAVtCJXFVr/product_images/1638351540.AP0015.jpeg",
-            title:"Shirt",
-            price:150,
-            Discount:10
-        }
-    ]
+import React from "react";
+import "./List.scss";
+import { Card }from "../Card/Card"
+import { useFetch } from "../../hooks/useFetch";
 
+export const List = ({ subCats, maxPrice, sort, catId }) => {
+  const { data, loading, error } = useFetch(
+    `/products?populate=*&[filters][categories][id]=${catId}${subCats.map(
+        (item) => `&[filters][sub_categories][id][$eq]=${item}`
+      )}&[filters][price][$lte]=${maxPrice}&sort=price:${sort}`
+    );
   return (
-    <div className='list'>{data.map(item=>(
-        <Card item={item} key={item.id}/>
-    ))}</div>
-  )
-}
+    <div className="list">
+      {loading
+        ? "loading"
+        : data?.map((item) => <Card item={item} key={item.id} />)}
+    </div>
+  );
+};
